@@ -14,6 +14,12 @@ This standalone directory is the Cloudflare Deploy Button root for NodeWarden. I
 
 ## User-owned configuration
 
+This test deployment deliberately disables scheduled backups (`triggers.crons: []`)
+to free an account Cron Trigger slot for the FlarePort Bot. The Worker, stored data,
+and manual backup functionality remain in place. Restore `*/5 * * * *` only after
+reserving a free Cron slot and deciding to re-enable this instance's scheduled backups.
+This is local deployment policy, not a change to the public NodeWarden template.
+
 Cloudflare asks for `JWT_SECRET`; its real value belongs in Cloudflare Secrets, never in Git. D1, R2, and both Durable Objects are provisioned from `wrangler.jsonc`. Dashboard variables are retained across deployments through `keep_vars`.
 
 The copied repository includes a weekly/manual updater. Its read-only job resolves FlarePort's configured branch to a full commit, seals the candidate as a hashed artifact, and then builds the untrusted upstream without credentials. A separate job receives the write token, starts from a clean checkout with persisted Git credentials disabled, verifies the sealed hash, and creates the branch and PR through GitHub's API. It never runs candidate or upstream code.
